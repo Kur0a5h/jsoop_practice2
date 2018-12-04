@@ -14,7 +14,15 @@ class ColorSquare{
 		you'll need to bind the handleClick method to this object:
 			this.handleClick = this.handleClick.bind(this)
 	*/
-	constructor( ){
+	constructor( colorOptions, currentColor, classOfDomToRender ){
+		console.log('test',classOfDomToRender);
+		this.colorOptions=colorOptions;
+		this.currentColor=currentColor;
+		this.classOfDomToRender=classOfDomToRender;
+		this.neigh=null;
+		this.handleClick=this.handleClick.bind(this);
+		this.square=$(classOfDomToRender)
+
 	}
 	/*setter function for the property neighbor
 	new, somewhat limited support: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/set
@@ -26,8 +34,15 @@ class ColorSquare{
 		make sure it only sets the neighbor if it is the right class constructor (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)
 		if it is the right constructor, set the neightbor
 	*/
-	set neighbor(){
-
+	set neighbor( newNeighbor ){
+		console.log(newNeighbor)
+		if(!newNeighbor){
+			return false
+		}else if(newNeighbor.constructor===ColorSquare){
+			this.neigh=newNeighbor;
+			return true
+		}
+		return false
 	}
 	/* getter function for the property neighbor
 	new, somewhat limited support: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get
@@ -37,7 +52,7 @@ class ColorSquare{
 		this object's property of the neighbor to the right
 	*/
 	get neighbor(){
-
+		return this.neigh;
 	}
 	/*
 	click handler for this dom element
@@ -54,7 +69,16 @@ class ColorSquare{
 			make sure the rightNeighbor is something!  the rightmost element won't have a neighbor
 		*/
 	handleClick(){
-
+		if(this.currentColor<this.colorOptions.length-1){
+			this.currentColor++
+		}else{
+			this.currentColor=0
+		}
+		this.changeColor(this.colorOptions[this.currentColor]
+			);
+		if(this.neigh){
+			this.neigh.handleClick();
+		}
 	}
 	/*
 	change the color of the current element
@@ -65,8 +89,8 @@ class ColorSquare{
 	notes:
 		changes the current object's dom element's backgound color to the argument color
 	*/
-	changeColor(  ){
-
+	changeColor( newColor ){
+		this.square.css('background-color', newColor)
 	}
 	/*
 	render / generate the dom element for the current object 
@@ -82,6 +106,11 @@ class ColorSquare{
 		return the dom element that was generated. 
 	*/
 	render(){
-
+		this.square=$('<div>',{
+				class:this.classOfDomToRender,
+				click: this.handleClick,
+				css: {'background-color': this.colorOptions[this.currentColor]}
+		})
+		return this.square;
 	}
 }
